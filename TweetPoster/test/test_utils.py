@@ -4,6 +4,7 @@ from TweetPoster.utils import (
     canonical_url,
     replace_entities,
     sanitize_markdown,
+    markdown_quote
 )
 
 
@@ -94,7 +95,7 @@ def test_sanitize_markdown():
     assert s == '\[link\]\(http://believe.in\)'
 
     s = sanitize_markdown('>some quote')
-    assert s == '>some quote'
+    assert s == '\>some quote'
 
     s = sanitize_markdown('*bold*')
     assert s == '\*bold\*'
@@ -102,6 +103,19 @@ def test_sanitize_markdown():
     s = sanitize_markdown('_bold_')
     assert s == '\_bold\_'
 
+    s = sanitize_markdown('A poem\nhas two lines')
+    assert s == 'A poem  \nhas two lines'
+
     s = sanitize_markdown('first, second and third')
     assert s == 'first, second and third'
+
+def test_markdown_quote():
+    s = markdown_quote('One liner')
+    assert s == '>One liner'
+
+    s = markdown_quote(sanitize_markdown('A brief\nAnd incorrect\nHaiku'))
+    assert s == '>A brief  \n>And incorrect  \n>Haiku'
+
+    s = markdown_quote(sanitize_markdown('>A brief\nAnd incorrect\nHaiku'))
+    assert s == '>\>A brief  \n>And incorrect  \n>Haiku'
 
