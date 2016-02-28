@@ -124,11 +124,13 @@ def replace_entities(tweet):
 
 
 def sanitize_markdown(unescaped):
-    # This prevents newlines breaking out of a markdown quote
-    # and also escapes markdown's special characters
-    return re.sub(r'([\\`*_{}[\]()#+-])', r'\\\1',
-                  '\n>'.join(unescaped.splitlines()))
+    # This escapes markdown's special characters and fixed newlines
+    return re.sub(r'([\\`*_{}[\]()#+>-])', r'\\\1',
+        '  \n'.join(unescaped.splitlines()))
 
+def markdown_quote(text):
+    # This changes some markdown text to the same text in a quote block
+    return '\n'.join('>' + line for line in text.splitlines())
 
 def tweet_to_markdown(tweet):
     with open(TweetPoster.template_path + 'tweet.txt') as f:
@@ -140,4 +142,5 @@ def tweet_to_markdown(tweet):
     # Link hashtags, expand urls, rehost images etc
     tweet = replace_entities(tweet)
 
-    return tweet_template.format(**tweet.__dict__)
+    return tweet_template.format(quoted_text=markdown_quote(tweet.text), **tweet.__dict__)
+

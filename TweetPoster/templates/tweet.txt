@@ -1,4 +1,4 @@
 [**@{user.name}**]({user.link}):
 >[{datetime} UTC]({link})
 
->{text}
+{quoted_text}
